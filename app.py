@@ -1,12 +1,13 @@
 import streamlit as st
 from urllib.parse import quote
+from pathlib import Path
 
 # =========================================================
 # PAGE CONFIG
 # =========================================================
 
 st.set_page_config(
-    page_title="BALAJI MALIGAI | Fresh Groceries",
+    page_title="BALAJI MALIGAI",
     page_icon="🛒",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -26,7 +27,124 @@ ADDRESS = (
     "Thirukadaiyur (PO), Mayiladuthurai (Dist)"
 )
 
-MAP_URL = "https://maps.app.goo.gl/voLpdqGVrMMMGkXf8"
+MAP_LINK = "https://maps.app.goo.gl/voLpdqGVrMMMGkXf8"
+
+# =========================================================
+# CSS
+# =========================================================
+
+st.markdown("""
+<style>
+
+.stApp {
+    background: #f5f7fb;
+}
+
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+.main-title {
+    font-size: 42px;
+    font-weight: 800;
+    color: #0f2742;
+    margin-bottom: 0;
+}
+
+.sub-title {
+    font-size: 18px;
+    color: #667085;
+    margin-bottom: 20px;
+}
+
+.hero {
+    background: linear-gradient(
+        135deg,
+        #07111f,
+        #0f2742,
+        #123b5d
+    );
+    padding: 40px;
+    border-radius: 24px;
+    color: white;
+    margin: 20px 0 30px 0;
+}
+
+.hero h1 {
+    font-size: 38px;
+    margin: 0 0 10px 0;
+}
+
+.hero p {
+    font-size: 18px;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #0f2742;
+    margin-top: 30px;
+    margin-bottom: 18px;
+}
+
+.product-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 10px;
+    min-height: 220px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+    text-align: center;
+}
+
+.product-emoji {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.product-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #102a43;
+    min-height: 48px;
+}
+
+.product-unit {
+    color: #667085;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.product-price {
+    color: #087f5b;
+    font-size: 22px;
+    font-weight: 800;
+    margin-top: 8px;
+}
+
+.info-box {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 15px;
+}
+
+.footer {
+    background: #07111f;
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+    margin-top: 40px;
+    text-align: center;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 # =========================================================
 # PRODUCTS
@@ -36,13 +154,6 @@ PRODUCTS = [
 
     # ---------------- STAPLES ----------------
 
-    {
-        "name": "Premium Rice",
-        "category": "Staples",
-        "unit": "5 kg",
-        "price": 320,
-        "emoji": "🍚"
-    },
     {
         "name": "Sona Masoori Rice",
         "category": "Staples",
@@ -70,20 +181,6 @@ PRODUCTS = [
         "unit": "1 kg",
         "price": 140,
         "emoji": "🍚"
-    },
-    {
-        "name": "Toor Dal",
-        "category": "Staples",
-        "unit": "1 kg",
-        "price": 145,
-        "emoji": "🫘"
-    },
-    {
-        "name": "Sugar",
-        "category": "Staples",
-        "unit": "1 kg",
-        "price": 48,
-        "emoji": "🍬"
     },
     {
         "name": "Wheat",
@@ -128,8 +225,15 @@ PRODUCTS = [
         "emoji": "🍜"
     },
 
-    # ---------------- DAL & PULSES ----------------
+    # ---------------- DAL ----------------
 
+    {
+        "name": "Toor Dal",
+        "category": "Dal & Pulses",
+        "unit": "1 kg",
+        "price": 160,
+        "emoji": "🫘"
+    },
     {
         "name": "Urad Dal",
         "category": "Dal & Pulses",
@@ -185,30 +289,6 @@ PRODUCTS = [
         "unit": "500 g",
         "price": 75,
         "emoji": "🫘"
-    },
-
-    # ---------------- VEGETABLES ----------------
-
-    {
-        "name": "Fresh Tomato",
-        "category": "Vegetables",
-        "unit": "1 kg",
-        "price": 55,
-        "emoji": "🍅"
-    },
-    {
-        "name": "Fresh Onion",
-        "category": "Vegetables",
-        "unit": "1 kg",
-        "price": 60,
-        "emoji": "🧅"
-    },
-    {
-        "name": "Potato",
-        "category": "Vegetables",
-        "unit": "1 kg",
-        "price": 50,
-        "emoji": "🥔"
     },
 
     # ---------------- OIL & MASALA ----------------
@@ -319,46 +399,8 @@ PRODUCTS = [
         "emoji": "🧂"
     },
 
-    # ---------------- DAIRY ----------------
-
-    {
-        "name": "Fresh Milk",
-        "category": "Dairy",
-        "unit": "1 litre",
-        "price": 60,
-        "emoji": "🥛"
-    },
-    {
-        "name": "Curd",
-        "category": "Dairy",
-        "unit": "500 ml",
-        "price": 35,
-        "emoji": "🥣"
-    },
-    {
-        "name": "Butter",
-        "category": "Dairy",
-        "unit": "100 g",
-        "price": 60,
-        "emoji": "🧈"
-    },
-    {
-        "name": "Paneer",
-        "category": "Dairy",
-        "unit": "200 g",
-        "price": 90,
-        "emoji": "🧀"
-    },
-
     # ---------------- SNACKS ----------------
 
-    {
-        "name": "Biscuits",
-        "category": "Snacks",
-        "unit": "Pack",
-        "price": 30,
-        "emoji": "🍪"
-    },
     {
         "name": "Marie Biscuits",
         "category": "Snacks",
@@ -386,13 +428,6 @@ PRODUCTS = [
         "unit": "Pack",
         "price": 30,
         "emoji": "🍪"
-    },
-    {
-        "name": "Potato Chips",
-        "category": "Snacks",
-        "unit": "Pack",
-        "price": 40,
-        "emoji": "🥔"
     },
     {
         "name": "Lays",
@@ -436,54 +471,61 @@ PRODUCTS = [
         "price": 180,
         "emoji": "🥜"
     },
-    {
-        "name": "Chocolate",
-        "category": "Snacks",
-        "unit": "Pack",
-        "price": 50,
-        "emoji": "🍫"
-    },
 
-    # ---------------- BEVERAGES ----------------
+    # ---------------- DAIRY ----------------
 
     {
-        "name": "Tea Powder",
-        "category": "Beverages",
-        "unit": "250 g",
-        "price": 120,
-        "emoji": "🍵"
+        "name": "Fresh Milk",
+        "category": "Dairy & Beverages",
+        "unit": "1 litre",
+        "price": 60,
+        "emoji": "🥛"
     },
     {
-        "name": "Coffee Powder",
-        "category": "Beverages",
-        "unit": "250 g",
-        "price": 150,
-        "emoji": "☕"
+        "name": "Curd",
+        "category": "Dairy & Beverages",
+        "unit": "500 g",
+        "price": 40,
+        "emoji": "🥛"
+    },
+    {
+        "name": "Butter",
+        "category": "Dairy & Beverages",
+        "unit": "100 g",
+        "price": 60,
+        "emoji": "🧈"
+    },
+    {
+        "name": "Paneer",
+        "category": "Dairy & Beverages",
+        "unit": "200 g",
+        "price": 90,
+        "emoji": "🧀"
     },
     {
         "name": "Horlicks",
-        "category": "Beverages",
+        "category": "Dairy & Beverages",
         "unit": "500 g",
         "price": 220,
         "emoji": "🥤"
     },
     {
         "name": "Boost",
-        "category": "Beverages",
+        "category": "Dairy & Beverages",
         "unit": "500 g",
         "price": 230,
         "emoji": "🥤"
     },
     {
         "name": "Health Drink",
-        "category": "Beverages",
+        "category": "Dairy & Beverages",
         "unit": "500 g",
         "price": 220,
         "emoji": "🥤"
     },
     {
         "name": "Soft Drink",
-        "category": "Beverages",
+        "category": "Dairy & Beverages",
         "unit": "1.25 litre",
         "price": 60,
         "emoji": "🥤"
@@ -635,9 +677,7 @@ PRODUCTS = [
         "emoji": "🧴"
     },
 
-    # =====================================================
-    # STATIONERY
-    # =====================================================
+    # ---------------- STATIONERY ----------------
 
     {
         "name": "Pencil",
@@ -981,29 +1021,13 @@ def get_product(name):
     return None
 
 
-def cart_count():
-    return sum(st.session_state.cart.values())
-
-
-def cart_total():
-    total = 0
-
-    for name, quantity in st.session_state.cart.items():
-        product = get_product(name)
-
-        if product:
-            total += product["price"] * quantity
-
-    return total
-
-
 def add_to_cart(name):
     st.session_state.cart[name] = (
         st.session_state.cart.get(name, 0) + 1
     )
 
 
-def decrease_cart(name):
+def remove_one(name):
     if name in st.session_state.cart:
         st.session_state.cart[name] -= 1
 
@@ -1011,44 +1035,20 @@ def decrease_cart(name):
             del st.session_state.cart[name]
 
 
-def create_order_message(
-    customer_name,
-    customer_phone,
-    customer_address,
-    payment_method
-):
-    lines = [
-        f"*{SHOP_NAME} - NEW ORDER*",
-        "",
-        "*ORDER DETAILS*"
-    ]
+def cart_total():
+    total = 0
 
-    for name, quantity in st.session_state.cart.items():
+    for name, qty in st.session_state.cart.items():
         product = get_product(name)
 
         if product:
-            item_total = product["price"] * quantity
+            total += product["price"] * qty
 
-            lines.append(
-                f"{product['emoji']} "
-                f"{product['name']} x {quantity} = ₹{item_total}"
-            )
+    return total
 
-    lines.extend([
-        "",
-        f"*TOTAL: ₹{cart_total()}*",
-        "",
-        f"*PAYMENT: {payment_method}*",
-        "",
-        "*CUSTOMER DETAILS*",
-        f"Name: {customer_name}",
-        f"Phone: {customer_phone}",
-        f"Address: {customer_address}",
-        "",
-        "Thank you for ordering from BALAJI MALIGAI!"
-    ])
 
-    return "\n".join(lines)
+def cart_count():
+    return sum(st.session_state.cart.values())
 
 
 # =========================================================
@@ -1057,98 +1057,79 @@ def create_order_message(
 
 with st.sidebar:
 
-    st.title("🛒 BALAJI MALIGAI")
+    st.markdown("## 🛒 BALAJI MALIGAI")
 
-    st.write("Fresh groceries at your doorstep.")
+    st.markdown("---")
 
-    st.divider()
+    st.write("📞 **Phone**")
+    st.write(PHONE)
 
-    st.subheader("📌 Shop Details")
+    st.markdown("---")
 
-    st.write(f"📞 **{PHONE}**")
-
-    st.write("💬 WhatsApp Available")
-
-    st.divider()
-
-    st.subheader("📍 Shop Address")
-
+    st.write("📍 **Address**")
     st.write(ADDRESS)
 
-    st.link_button(
-        "🗺️ Open Google Maps",
-        MAP_URL,
-        use_container_width=True
-    )
+    st.markdown("---")
 
-    st.divider()
-
-    st.subheader("🛍️ Your Cart")
-
+    st.write("🛒 **Cart Items**")
     st.metric("Items", cart_count())
 
+    st.write("💰 **Cart Total**")
     st.metric("Total", f"₹{cart_total()}")
 
-
 # =========================================================
-# MAIN HEADER
+# HEADER
 # =========================================================
 
-st.title("🛒 BALAJI MALIGAI")
-
-st.subheader(
-    "Fresh Groceries • Quality Products • Easy Ordering"
+st.markdown(
+    '<div class="main-title">🛒 BALAJI MALIGAI</div>',
+    unsafe_allow_html=True
 )
 
-st.write(
-    "Your local grocery shop for everyday essentials."
+st.markdown(
+    '<div class="sub-title">'
+    'Groceries • Household • Personal Care • Stationery'
+    '</div>',
+    unsafe_allow_html=True
 )
-
-st.divider()
 
 # =========================================================
 # HERO
 # =========================================================
 
-st.header("🛍️ Shop Fresh. Shop Easy.")
-
-st.write(
-    "Choose your favourite products, "
-    "add them to your cart and order directly through WhatsApp."
+st.markdown(
+    """
+    <div class="hero">
+        <h1>Everything You Need, In One Place 🛍️</h1>
+        <p>
+            Quality groceries, household essentials and
+            stationery at affordable prices.
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True
 )
 
-hero1, hero2, hero3 = st.columns(3)
-
-with hero1:
-    st.info("🥦 Fresh Products")
-
-with hero2:
-    st.info("💰 Affordable Prices")
-
-with hero3:
-    st.info("📱 WhatsApp Ordering")
-
-st.divider()
-
 # =========================================================
-# PRODUCT SECTION
+# SEARCH
 # =========================================================
 
-st.header("🛍️ Our Products")
+st.markdown(
+    '<div class="section-title">🛍️ Shop Products</div>',
+    unsafe_allow_html=True
+)
 
 search = st.text_input(
-    "🔎 Search Products",
-    placeholder="Search rice, pen, milk..."
+    "🔎 Search Product",
+    placeholder="Search rice, pen, soap, biscuits..."
 )
 
-categories = ["All"]
-
-for product in PRODUCTS:
-    if product["category"] not in categories:
-        categories.append(product["category"])
+categories = ["All"] + sorted(
+    list(set(p["category"] for p in PRODUCTS))
+)
 
 selected_category = st.selectbox(
-    "📂 Select Category",
+    "📂 Category",
     categories
 )
 
@@ -1160,248 +1141,481 @@ filtered_products = []
 
 for product in PRODUCTS:
 
-    matches_search = (
-        not search
-        or search.lower() in product["name"].lower()
+    search_match = (
+        search.lower()
+        in product["name"].lower()
     )
 
-    matches_category = (
+    category_match = (
         selected_category == "All"
         or product["category"] == selected_category
     )
 
-    if matches_search and matches_category:
+    if search_match and category_match:
         filtered_products.append(product)
 
 # =========================================================
-# PRODUCT CARDS
+# PRODUCTS
 # =========================================================
 
 if not filtered_products:
 
-    st.warning("No products found.")
+    st.warning("😕 Product not found.")
 
 else:
 
-    for i in range(0, len(filtered_products), 3):
+    columns = st.columns(4)
 
-        cols = st.columns(3)
+    for index, product in enumerate(filtered_products):
 
-        row_products = filtered_products[i:i + 3]
+        with columns[index % 4]:
 
-        for col, product in zip(cols, row_products):
+            # IMPORTANT:
+            # This is the only HTML product card.
+            # unsafe_allow_html=True makes it render,
+            # not display as code.
 
-            with col:
+            st.markdown(
+                f"""
+                <div class="product-card">
 
-                with st.container(border=True):
+                    <div class="product-emoji">
+                        {product["emoji"]}
+                    </div>
 
-                    st.subheader(
-                        f"{product['emoji']} {product['name']}"
-                    )
+                    <div class="product-name">
+                        {product["name"]}
+                    </div>
 
-                    st.write(product["unit"])
+                    <div class="product-unit">
+                        {product["unit"]}
+                    </div>
 
-                    st.markdown(
-                        f"### ₹{product['price']}"
-                    )
+                    <div class="product-price">
+                        ₹{product["price"]}
+                    </div>
+
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            name = product["name"]
+
+            if st.button(
+                "🛒 Add to Cart",
+                key=f"add_{name}",
+                use_container_width=True
+            ):
+                add_to_cart(name)
+                st.rerun()
+
+            qty = st.session_state.cart.get(name, 0)
+
+            if qty > 0:
+
+                c1, c2, c3 = st.columns(3)
+
+                with c1:
 
                     if st.button(
-                        "🛒 Add to Cart",
-                        key=f"add_{product['name']}",
-                        use_container_width=True
+                        "➖",
+                        key=f"minus_{name}"
                     ):
-                        add_to_cart(product["name"])
+                        remove_one(name)
                         st.rerun()
 
-                    quantity = st.session_state.cart.get(
-                        product["name"],
-                        0
+                with c2:
+
+                    st.markdown(
+                        f"<div style='text-align:center;"
+                        f"font-weight:bold;"
+                        f"padding-top:8px;'>"
+                        f"{qty}"
+                        f"</div>",
+                        unsafe_allow_html=True
                     )
 
-                    q1, q2, q3 = st.columns(3)
+                with c3:
 
-                    with q1:
-
-                        if st.button(
-                            "−",
-                            key=f"minus_{product['name']}",
-                            use_container_width=True
-                        ):
-                            decrease_cart(product["name"])
-                            st.rerun()
-
-                    with q2:
-
-                        st.markdown(
-                            f"<div style='text-align:center;"
-                            f"font-size:20px;"
-                            f"padding-top:5px;'>"
-                            f"{quantity}"
-                            f"</div>",
-                            unsafe_allow_html=True
-                        )
-
-                    with q3:
-
-                        if st.button(
-                            "+",
-                            key=f"plus_{product['name']}",
-                            use_container_width=True
-                        ):
-                            add_to_cart(product["name"])
-                            st.rerun()
-
+                    if st.button(
+                        "➕",
+                        key=f"plus_{name}"
+                    ):
+                        add_to_cart(name)
+                        st.rerun()
 
 # =========================================================
 # CART
 # =========================================================
 
-st.divider()
-
-st.header("🛒 Your Cart")
+st.markdown(
+    '<div class="section-title">🛒 Your Cart</div>',
+    unsafe_allow_html=True
+)
 
 if not st.session_state.cart:
 
-    st.info("Your cart is empty.")
+    st.info(
+        "Your cart is empty. Add products to continue."
+    )
 
 else:
 
-    for name, quantity in list(
+    for name, qty in list(
         st.session_state.cart.items()
     ):
 
         product = get_product(name)
 
-        if product:
+        if not product:
+            continue
 
-            item_total = product["price"] * quantity
+        item_total = product["price"] * qty
 
-            c1, c2, c3, c4 = st.columns(
-                [4, 1, 1, 2]
+        c1, c2, c3, c4 = st.columns(
+            [4, 1, 2, 2]
+        )
+
+        with c1:
+            st.write(
+                f"{product['emoji']} **{name}**"
             )
 
-            with c1:
-                st.write(
-                    f"{product['emoji']} "
-                    f"**{product['name']}**"
-                )
+        with c2:
+            st.write(f"x {qty}")
 
-            with c2:
-                st.write(f"x {quantity}")
+        with c3:
+            st.write(f"₹{item_total}")
 
-            with c3:
-                st.write(f"₹{item_total}")
+        with c4:
 
-            with c4:
+            if st.button(
+                "❌ Remove",
+                key=f"cart_remove_{name}"
+            ):
+                del st.session_state.cart[name]
+                st.rerun()
 
-                if st.button(
-                    "Remove",
-                    key=f"remove_{name}"
-                ):
-                    del st.session_state.cart[name]
-                    st.rerun()
+    st.markdown("---")
 
-    st.success(
-        f"### Cart Total: ₹{cart_total()}"
+    st.subheader(
+        f"💰 Total: ₹{cart_total()}"
     )
 
 # =========================================================
 # CHECKOUT
 # =========================================================
 
+st.markdown(
+    '<div class="section-title">📦 Checkout</div>',
+    unsafe_allow_html=True
+)
+
 if st.session_state.cart:
-
-    st.divider()
-
-    st.header("📦 Checkout")
 
     customer_name = st.text_input(
         "👤 Customer Name"
     )
 
     customer_phone = st.text_input(
-        "📞 Phone Number"
+        "📱 Phone Number"
     )
 
     customer_address = st.text_area(
-        "📍 Delivery Address"
+        "🏠 Delivery Address"
     )
 
-    payment_method = st.selectbox(
-        "💳 Payment Method",
-        [
-            "Cash on Delivery",
-            "UPI"
-        ]
+    notes = st.text_area(
+        "📝 Order Notes"
     )
 
-    if payment_method == "UPI":
+    # =====================================================
+    # PAYMENT
+    # =====================================================
 
-        st.info(
-            f"UPI ID: **{UPI_ID}**"
-        )
-
-        upi_link = (
-            "upi://pay?"
-            f"pa={quote(UPI_ID)}"
-            f"&pn={quote(SHOP_NAME)}"
-            f"&am={cart_total()}"
-            "&cu=INR"
-        )
-
-        st.link_button(
-            "💳 Pay using UPI",
-            upi_link,
-            use_container_width=True
-        )
-
-    order_message = create_order_message(
-        customer_name,
-        customer_phone,
-        customer_address,
-        payment_method
+    st.markdown(
+        '<div class="section-title">💳 Scan & Pay</div>',
+        unsafe_allow_html=True
     )
+
+    st.info(
+        "Scan this QR using PhonePe / Google Pay / Paytm "
+        "or another UPI app."
+    )
+
+    qr_file = Path("payment_qr.jpg")
+
+    if qr_file.exists():
+
+        st.image(
+            str(qr_file),
+            caption="BALAJI MALIGAI - Scan & Pay",
+            width=320
+        )
+
+    else:
+
+        st.error(
+            "payment_qr.jpg file not found."
+        )
+
+        st.write(
+            "Put payment_qr.jpg in the same folder "
+            "as app.py."
+        )
+
+    st.write(
+        f"💳 **UPI ID:** `{UPI_ID}`"
+    )
+
+    st.caption(
+        "After payment, send the payment screenshot "
+        "along with your order on WhatsApp."
+    )
+
+    # =====================================================
+    # WHATSAPP MESSAGE
+    # =====================================================
+
+    message = []
+
+    message.append(
+        "🛒 BALAJI MALIGAI ORDER"
+    )
+
+    message.append("")
+
+    message.append(
+        f"👤 Name: {customer_name}"
+    )
+
+    message.append(
+        f"📱 Phone: {customer_phone}"
+    )
+
+    message.append(
+        f"🏠 Address: {customer_address}"
+    )
+
+    message.append("")
+
+    message.append(
+        "📦 ORDER ITEMS"
+    )
+
+    for name, qty in st.session_state.cart.items():
+
+        product = get_product(name)
+
+        if product:
+
+            amount = product["price"] * qty
+
+            message.append(
+                f"{product['emoji']} "
+                f"{name} x {qty} = ₹{amount}"
+            )
+
+    message.append("")
+
+    message.append(
+        f"💰 TOTAL: ₹{cart_total()}"
+    )
+
+    message.append("")
+
+    message.append(
+        "💳 Payment: UPI"
+    )
+
+    message.append(
+        f"UPI ID: {UPI_ID}"
+    )
+
+    if notes:
+
+        message.append("")
+
+        message.append(
+            f"📝 Notes: {notes}"
+        )
+
+    whatsapp_message = "\n".join(message)
 
     whatsapp_url = (
         f"https://wa.me/{WHATSAPP}"
-        f"?text={quote(order_message)}"
+        f"?text={quote(whatsapp_message)}"
     )
 
-    if st.button(
-        "📱 Order on WhatsApp",
-        type="primary",
+    st.markdown(
+        f"""
+        <a href="{whatsapp_url}" target="_blank"
+           style="text-decoration:none;">
+
+            <div style="
+                background:#25D366;
+                color:white;
+                padding:15px;
+                text-align:center;
+                border-radius:12px;
+                font-size:18px;
+                font-weight:bold;
+                margin-top:15px;
+            ">
+                📲 SEND ORDER ON WHATSAPP
+            </div>
+
+        </a>
+        """,
+        unsafe_allow_html=True
+    )
+
+else:
+
+    st.info(
+        "🛒 Add products to your cart first."
+    )
+
+# =========================================================
+# FEATURES
+# =========================================================
+
+st.markdown(
+    '<div class="section-title">✨ Why Shop With Us?</div>',
+    unsafe_allow_html=True
+)
+
+c1, c2, c3, c4 = st.columns(4)
+
+with c1:
+
+    st.markdown(
+        """
+        <div class="info-box">
+            <h3>🛍️ Easy Shopping</h3>
+            <p>
+                Search products and add them
+                to your cart easily.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with c2:
+
+    st.markdown(
+        """
+        <div class="info-box">
+            <h3>💳 UPI Payment</h3>
+            <p>
+                Scan the QR code and pay
+                using your UPI app.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with c3:
+
+    st.markdown(
+        """
+        <div class="info-box">
+            <h3>📲 WhatsApp Order</h3>
+            <p>
+                Send your complete order
+                directly through WhatsApp.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with c4:
+
+    st.markdown(
+        """
+        <div class="info-box">
+            <h3>🏠 Home Delivery</h3>
+            <p>
+                Enter your delivery address
+                during checkout.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+# =========================================================
+# CONTACT
+# =========================================================
+
+st.markdown(
+    '<div class="section-title">📞 Contact Us</div>',
+    unsafe_allow_html=True
+)
+
+c1, c2 = st.columns(2)
+
+with c1:
+
+    st.markdown(
+        f"""
+        <div class="info-box">
+
+            <h3>🏪 {SHOP_NAME}</h3>
+
+            <p>📞 <b>{PHONE}</b></p>
+
+            <p>💳 <b>{UPI_ID}</b></p>
+
+            <p>📍 {ADDRESS}</p>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+with c2:
+
+    st.link_button(
+        "📍 Open Google Maps",
+        MAP_LINK,
         use_container_width=True
-    ):
+    )
 
-        if (
-            not customer_name
-            or not customer_phone
-            or not customer_address
-        ):
-
-            st.error(
-                "Please fill all customer details."
-            )
-
-        else:
-
-            st.markdown(
-                f"[📱 Click here to send your order "
-                f"on WhatsApp]({whatsapp_url})"
-            )
+    st.link_button(
+        "📲 WhatsApp",
+        f"https://wa.me/{WHATSAPP}",
+        use_container_width=True
+    )
 
 # =========================================================
 # FOOTER
 # =========================================================
 
-st.divider()
+st.markdown(
+    f"""
+    <div class="footer">
 
-st.subheader("📍 BALAJI MALIGAI")
+        <h2>🛒 {SHOP_NAME}</h2>
 
-st.write(ADDRESS)
+        <p>
+            Groceries • Household • Personal Care • Stationery
+        </p>
 
-st.write(f"📞 Phone: {PHONE}")
+        <p>
+            📞 {PHONE} &nbsp; | &nbsp;
+            💳 {UPI_ID}
+        </p>
 
-st.write(
-    "🛒 Thank you for shopping with BALAJI MALIGAI!"
+        <p>
+            © 2026 {SHOP_NAME}
+        </p>
+
+    </div>
+    """,
+    unsafe_allow_html=True
 )

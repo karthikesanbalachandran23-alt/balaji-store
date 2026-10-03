@@ -18,7 +18,7 @@ st.set_page_config(
 SHOP_NAME = "BALAJI MALIGAI"
 PHONE = "7558110544"
 WHATSAPP = "917558110544"
-UPI_ID = "mmk541994@okicici"
+UPI_ID = "7558110544@ybl"
 ADDRESS = (
     "2/172 Main Road, Annapanpettai, "
     "Thirukadaiyur (PO), Mayiladuthurai (Dist)"

@@ -1,6 +1,7 @@
 import streamlit as st
 from urllib.parse import quote
 from pathlib import Path
+import urllib.parse
 
 # =========================================================
 # PAGE CONFIG
@@ -1314,9 +1315,40 @@ elif page == "📦 Checkout":
                     "Add payment_qr.png inside the same folder as app.py."
                 )
 
-        st.divider()
+amount = cart_total()
 
-        if st.button(
+UPI_ID = "7558110544@ybl"
+
+upi_link = "upi://pay?" + urllib.parse.urlencode({
+    "pa": UPI_ID,
+    "pn": "BALAJI MALIGAI",
+    "am": f"{amount:.2f}",
+    "cu": "INR",
+    "tn": "Balaji Maligai Order"
+})
+
+st.success(f"💰 Total Amount: ₹{amount:,.2f}")
+
+st.write(f"💳 **UPI ID:** `{UPI_ID}`")
+
+st.link_button(
+    f"📲 PAY ₹{amount:,.2f} NOW",
+    upi_link,
+    use_container_width=True
+)
+
+st.info(
+    "📱 Mobile-la **PAY NOW** click pannunga → "
+    "PhonePe / Google Pay / UPI app open aagum → payment pannunga."
+)
+
+st.caption(
+    "⚠️ Payment success automatic-ah verify aagathu. "
+    "Payment verification-ku gateway integration thevai."
+)
+st.divider()
+
+if st.button(
             "📲 Place Order on WhatsApp",
             use_container_width=True
         ):
@@ -1388,8 +1420,6 @@ elif page == "📦 Checkout":
                     "💬 Open WhatsApp & Send Order",
                     whatsapp_url
                 )
-
-
 # =========================================================
 # CONTACT
 # =========================================================

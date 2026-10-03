@@ -1337,15 +1337,7 @@ st.link_button(
     use_container_width=True
 )
 
-st.info(
-    "📱 Mobile-la **PAY NOW** click pannunga → "
-    "PhonePe / Google Pay / UPI app open aagum → payment pannunga."
-)
 
-st.caption(
-    "⚠️ Payment success automatic-ah verify aagathu. "
-    "Payment verification-ku gateway integration thevai."
-)
 st.divider()
 
 if st.button(
